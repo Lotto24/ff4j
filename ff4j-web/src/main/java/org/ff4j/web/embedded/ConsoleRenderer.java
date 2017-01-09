@@ -54,6 +54,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -156,13 +158,17 @@ public final class ConsoleRenderer {
         htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
 
         // Subsctitution FEATURE_ROWS
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", renderFeatureRows(ff4j, req));
+        Object[] pair = renderFeatureRows(ff4j, req);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", (String) pair[0]);
+
+        Map<String, Feature> mapOfFeatures = (Map<String, Feature>) pair[1];
+        SortedSet<String> allGroups = extractGroups(mapOfFeatures);
         
         // substitution PROPERTIES_ROWS
         htmlContent = htmlContent.replaceAll("\\{" + KEY_PROPERTIES_ROWS + "\\}", renderPropertiesRows(ff4j, req));
         
         // Substitution GROUP_LIST
-        String groups = ConsoleRenderer.renderGroupList(ff4j, MODAL_EDIT);
+        String groups = ConsoleRenderer.renderGroupList(allGroups, MODAL_EDIT);
         htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_EDIT + "\\}", groups);
         groups = groups.replaceAll(MODAL_EDIT, MODAL_CREATE);
         htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_CREATE + "\\}", groups);
@@ -175,8 +181,18 @@ public final class ConsoleRenderer {
 
         out.println(htmlContent);
     }
-    
-    
+
+    private static SortedSet<String> extractGroups(Map<String, Feature> mapOfFeatures) {
+        SortedSet<String> groups = new TreeSet<String>();
+
+        for (Feature f : mapOfFeatures.values()) {
+            groups.add(f.getGroup());
+        }
+
+        return groups;
+    }
+
+
     /**
      * Render the ff4f console webpage through different block.
      * 
@@ -409,7 +425,7 @@ public final class ConsoleRenderer {
      * @param currentElement
      * @return
      */
-    private static final String renderFeatureRows(FF4j ff4j, HttpServletRequest req) {
+    private static final Object[] renderFeatureRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         final Map < String, Feature> mapOfFeatures = ff4j.getFeatures();
         for(Map.Entry<String,Feature> uid : mapOfFeatures.entrySet()) {
@@ -507,20 +523,18 @@ public final class ConsoleRenderer {
             sb.append("</a>");
             sb.append("</td></tr>");
         }
-        return sb.toString();
+        return new Object[] {sb.toString(), mapOfFeatures};
     }
 
     /**
      * Render group list block.
      * 
-     * @param ff4j
-     *            target ff4j.
      * @return list of group
      */
-    private static String renderGroupList(FF4j ff4j, String modalId) {
+    private static String renderGroupList(Set<String> allGroups, String modalId) {
         StringBuilder sb = new StringBuilder();
-        if (null != ff4j.getFeatureStore().readAllGroups()) {
-            for (String group : ff4j.getFeatureStore().readAllGroups()) {
+        if (null != allGroups) {
+            for (String group : allGroups) {
                 sb.append("<li><a href=\"#\" onclick=\"\\$('\\#" + modalId + " \\#groupName').val('");
                 sb.append(group);
                 sb.append("');\">");
