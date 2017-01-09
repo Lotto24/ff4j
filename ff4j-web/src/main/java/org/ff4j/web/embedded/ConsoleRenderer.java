@@ -186,7 +186,9 @@ public final class ConsoleRenderer {
         SortedSet<String> groups = new TreeSet<String>();
 
         for (Feature f : mapOfFeatures.values()) {
-            groups.add(f.getGroup());
+            if (f.getGroup() != null) {
+                groups.add(f.getGroup());
+            }
         }
 
         return groups;
