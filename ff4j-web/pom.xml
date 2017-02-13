@@ -4,9 +4,8 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ COORDINATES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<groupId>com.tipp24</groupId>
 	<artifactId>ff4j-web</artifactId>
-	<version>1.6.1</version>
+	<version>1.6.1-esailors</version>
 	<packaging>jar</packaging>
 	<name>ff4j-web</name>
 
