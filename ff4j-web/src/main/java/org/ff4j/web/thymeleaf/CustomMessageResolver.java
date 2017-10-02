@@ -33,9 +33,8 @@ import java.util.Properties;
 import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thymeleaf.Arguments;
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.messageresolver.IMessageResolver;
-import org.thymeleaf.messageresolver.MessageResolution;
 
 /**
  * All message in the same properties file embedded.
@@ -117,16 +116,21 @@ public class CustomMessageResolver implements IMessageResolver {
 	}
 	
 	/** {@inheritDoc} */
-	public MessageResolution resolveMessage(Arguments args, String key, Object[] msgParams) {
-		final Locale locale = args.getContext().getLocale();
+	public String resolveMessage(ITemplateContext context, Class<?> origin, String key, Object[] messageParameters) {
+		final Locale locale = context.getLocale();
         String targetMsg = resolveProperties(locale).getProperty(key);
 		if (targetMsg == null) {
 			targetMsg = key;
-		} else if (msgParams != null && msgParams.length > 0) {
-			targetMsg = new MessageFormat(targetMsg, args.getContext().getLocale()).format(msgParams);
+		} else if (messageParameters != null && messageParameters.length > 0) {
+			targetMsg = new MessageFormat(targetMsg, context.getLocale()).format(messageParameters);
 		}
-		return new MessageResolution(targetMsg);
-	}	
+		return targetMsg;
+	}
+
+	@Override
+	public String createAbsentMessageRepresentation(ITemplateContext context, Class<?> origin, String key, Object[] messageParameters) {
+		return "_NOT_TRANSLATED";
+	}
 
 	/** {@inheritDoc} */
 	public Integer getOrder() {
