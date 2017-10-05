@@ -7,7 +7,7 @@
 	<artifactId>ff4j-web</artifactId>
 	<packaging>jar</packaging>
 	<name>ff4j-web</name>
-	<version>1.6.5-esailors</version>
+	<version>1.6.5-esailors-1</version>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ PARENT ~ -->
