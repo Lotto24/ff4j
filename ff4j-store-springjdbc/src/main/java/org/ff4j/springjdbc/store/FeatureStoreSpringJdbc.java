@@ -162,7 +162,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
         String strategyColumn   = null;
         String expressionColumn = null;
         if (fp.getFlippingStrategy() != null) {
-            strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
+            strategyColumn = fp.getFlippingStrategy().getClass().getName();
             expressionColumn = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         getJdbcTemplate().update(getQueryBuilder().createFeature(), 
@@ -402,13 +402,14 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
     @Transactional
     public void createSchema() {
         JdbcQueryBuilder qb = getQueryBuilder();
-        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameFeatures())) {
+        String dbSchema = queryBuilder.getDbSchema();
+		if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameFeatures(), dbSchema)) {
             getJdbcTemplate().update(qb.sqlCreateTableFeatures());
         }
-        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameCustomProperties())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameCustomProperties(), dbSchema)) {
             getJdbcTemplate().update(qb.sqlCreateTableCustomProperties());
         }
-        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameRoles())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameRoles(), dbSchema)) {
             getJdbcTemplate().update(qb.sqlCreateTableRoles());
         }
     }

@@ -31,7 +31,19 @@ import org.ff4j.core.FlippingExecutionContext;
  * &lt;ff4j:enable featureid="mercure-desc"&gt;
  * here your html code
  *  &lt;/ff4j:enable@gt;
- * 
+ *
+ * <p/>
+ *
+ * It is also possible to store the result of feature evaluation to be able to use it in a more complex
+ * condition:
+ *
+ * <pre><code>
+ *     &lt;ff4j:disable featureid="mercure-desc" var="mercureDescEnabled"&gt;
+ *     &lt;c:if test=${mercureDescEnabled && otherCondition}"&gt;
+ *       Your HTML code
+ *     &lt;/c:if"&gt;
+ * </code></pre>
+
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FeatureTagEnable extends AbstractFeatureTag {
@@ -40,25 +52,7 @@ public class FeatureTagEnable extends AbstractFeatureTag {
     private static final long serialVersionUID = -4924423673988080781L;
 
     /** {@inheritDoc} */
-    protected boolean eval(FF4j ff4j, PageContext jspContext) {
-        FlippingExecutionContext executionContext = new FlippingExecutionContext();
-        if (isShareHttpSession()) {
-            executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
-            @SuppressWarnings("unchecked")
-            Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
-            for (Map.Entry<String,String[]> param : parameters.entrySet()) {
-                String[] innerParams = param.getValue();
-                if (innerParams != null) {
-                    StringBuilder sb = new StringBuilder();
-                    for (String innerParam : innerParams) {
-                        sb.append(innerParam);
-                        sb.append(",");
-                    }
-                    String expression = sb.toString();
-                    executionContext.putString(param.getKey(), expression.substring(0, expression.length() - 1));
-                }
-            }
-        }
+    protected boolean evalWithExecutionContext(FF4j ff4j, PageContext pageContext, FlippingExecutionContext executionContext) {
         return ff4j.check(getFeatureid(), executionContext);
     }
 

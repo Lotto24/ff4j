@@ -127,8 +127,7 @@ public class FF4j {
      * or the wraps exception thrown by an invoked method or constructor
      */
     private boolean alterBeanThrowInvocationTargetException = true;
-    
-    
+        
     /**
      * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
@@ -161,7 +160,7 @@ public class FF4j {
      * @return current feature status
      */
     public boolean check(String featureID) {
-        return check(featureID, null);
+        return check(featureID, currentExecutionContext.get());
     }
 
     /**
@@ -821,6 +820,16 @@ public class FF4j {
             this.currentExecutionContext.set(new FlippingExecutionContext());
         }
         return this.currentExecutionContext.get();
+    }
+
+    /**
+     * Override flipping execution context.
+     *
+     * @param executionContext
+     *      The new current context
+     */
+    public void setCurrentContext(FlippingExecutionContext executionContext) {
+        this.currentExecutionContext.set(executionContext);
     }
 
     /**

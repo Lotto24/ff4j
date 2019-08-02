@@ -82,28 +82,21 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
      * @param serviceLocator
      */
     public void init() {
-        log.info("  __  __ _  _   _ ");
-        log.info(" / _|/ _| || | (_)");
-        log.info("| |_| |_| || |_| |");
-        log.info("|  _|  _|__   _| |");
-        log.info("|_| |_|    |_|_/ |");
-        log.info("             |__/   WEB API Initialization...");
-        log.info(" ");
-
-        apiConfig = getWebApiConfiguration();
         packages(FF4jResource.class.getPackage().getName());
 
         register(new FF4jBinder());
         register(JerseyApplicationEventListener.class);
         register(JerseyRequestEventListener.class);
+        apiConfig = getWebApiConfiguration();
         
         if (apiConfig != null) {
             if (apiConfig.isAutorize()) {
                 enableAuthenticationFilter();
                 enableAuthorizationFilter();
-                
             } else if (apiConfig.isAuthenticate()) {
                 enableAuthenticationFilter();
+            } else {
+                log.info("No authentication nor authorization");
             }
         
             // Swagger configuration
@@ -126,6 +119,7 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
                 register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
                 log.info("Initialisation Swagger [OK]");
             }
+        } else {
         }
         log.info("Initialisation WebAPI [OK]");
     }

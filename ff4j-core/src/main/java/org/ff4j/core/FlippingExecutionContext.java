@@ -23,6 +23,7 @@ package org.ff4j.core;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Pojo holding an execution context to perform {@link FlippingStrategy} evaluations.
@@ -47,6 +48,16 @@ public class FlippingExecutionContext {
      */
     public FlippingExecutionContext(Map<String, Object> init) {
         this.parameters = init;
+    }
+
+    /**
+     * Initializing context.
+     *
+     * @param executionContext
+     *            An existing execution context to copy.
+     */
+    public FlippingExecutionContext(FlippingExecutionContext executionContext) {
+        this.parameters.putAll(executionContext.parameters);
     }
 
     /**
@@ -100,7 +111,7 @@ public class FlippingExecutionContext {
      */
     public String getString(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof String)) {
+        if (o != null && !(o instanceof String)) {
             throw new IllegalArgumentException("Cannot convert parameter to String");
         }
         return (String) o;
@@ -128,7 +139,7 @@ public class FlippingExecutionContext {
      */
     public Boolean getBoolean(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Boolean)) {
+        if (o != null && !(o instanceof Boolean)) {
             throw new IllegalArgumentException("Cannot convert parameter to Boolean");
         }
         return (Boolean) o;
@@ -157,7 +168,7 @@ public class FlippingExecutionContext {
      */
     public Integer getInt(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Integer)) {
+        if (o != null && !(o instanceof Integer)) {
             throw new IllegalArgumentException("Cannot convert parameter to Integer it");
         }
         return (Integer) o;
@@ -185,7 +196,7 @@ public class FlippingExecutionContext {
      */
     public Double getDouble(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Double)) {
+        if (o != null && !(o instanceof Double)) {
             throw new IllegalArgumentException("Cannot convert parameter to Double");
         }
         return (Double) o;
@@ -213,7 +224,7 @@ public class FlippingExecutionContext {
      */
     public Date getDate(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Date)) {
+        if (o != null && !(o instanceof Date)) {
             throw new IllegalArgumentException("Cannot convert parameter to Date");
         }
         return (Date) o;
@@ -289,5 +300,31 @@ public class FlippingExecutionContext {
         this.addValue(key, value);
     }
 
+    /**
+     * Check if the current flipping execution is empty or not.
+     *
+     * @return {@code true} if execution context is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return parameters.isEmpty();
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj instanceof FlippingExecutionContext) {
+            FlippingExecutionContext ctx = (FlippingExecutionContext) obj;
+            return Objects.equals(parameters, ctx.parameters);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(parameters);
+    }
 }

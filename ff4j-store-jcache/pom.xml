@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.6.5</version>
+		<version>1.8.2-SNAPSHOT</version>
 	</parent>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -67,14 +67,6 @@
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
 			<scope>test</scope>
-		</dependency>
-		
-		<!-- Apache Ignite -->
-		<dependency>
-	    <groupId>org.apache.ignite</groupId>
-	    <artifactId>ignite-core</artifactId>
-		    <version>${ignite.version}</version>
-		    <scope>test</scope>
 		</dependency>
 		
 		<!-- Tests -->

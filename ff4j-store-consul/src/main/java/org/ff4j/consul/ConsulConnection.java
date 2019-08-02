@@ -166,7 +166,12 @@ public class ConsulConnection implements KeyValueDriver< String, String > {
     /** {@inheritDoc} */
     @Override
     public String getValue(String key) {
-        return getKeyValueClient().getValueAsString(key).get();
+        Optional<String> keyValue = getKeyValueClient().getValueAsString(key);
+        if (!keyValue.isPresent()) {
+            throw new IllegalArgumentException("Cannot read key '" + key + "' from consul. This error might error if you "
+                    + "remove the KEY from consul without editing FF4J/FEATURES_DICTIONARY.");
+        }
+        return keyValue.get();
     } 
     
     /** {@inheritDoc} */
@@ -259,7 +264,7 @@ public class ConsulConnection implements KeyValueDriver< String, String > {
     /** {@inheritDoc} */
     @Override
     public String getHitCountKey(Event e) {
-        return ConsulConstants.FF4J_PREFIXKEY_HITS + "/" + 
+        return ConsulConstants.FF4J_PREFIXKEY_HITS +
                     KDF.format(e.getTimestamp()) + "/"   +
                     e.getName() + "/" + e.getUuid();
     }
@@ -267,7 +272,7 @@ public class ConsulConnection implements KeyValueDriver< String, String > {
     /** {@inheritDoc} */
     @Override
     public String getMissKey(Event e) {
-        return ConsulConstants.FF4J_PREFIXKEY_MISS + "/" + 
+        return ConsulConstants.FF4J_PREFIXKEY_MISS +
                 KDF.format(e.getTimestamp()) + "/"   +
                 e.getName() + "/" + e.getUuid();
     }
@@ -275,7 +280,7 @@ public class ConsulConnection implements KeyValueDriver< String, String > {
     /** {@inheritDoc} */
     @Override
     public String getAuditTrailKey(Event e) {
-        return ConsulConstants.FF4J_PREFIXKEY_AUDIT + "/" + 
+        return ConsulConstants.FF4J_PREFIXKEY_AUDIT +
                 KDF.format(e.getTimestamp()) + "/"   +
                 e.getName() + "/" + e.getUuid();
     }

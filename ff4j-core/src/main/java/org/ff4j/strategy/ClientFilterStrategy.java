@@ -35,6 +35,9 @@ import org.ff4j.core.FlippingExecutionContext;
  */
 public class ClientFilterStrategy extends AbstractFlipStrategy {
 
+    /** Serial. */
+    private static final long serialVersionUID = -485058682902446581L;
+
     /** Threshold. */
     private static final String PARAM_CLIENTLIST = "grantedClients";
 
@@ -83,7 +86,7 @@ public class ClientFilterStrategy extends AbstractFlipStrategy {
     @Override
     public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext) {
         if (null == executionContext || !executionContext.containsKey(CLIENT_HOSTNAME)) {
-            throw new IllegalArgumentException("To work with " + getClass().getCanonicalName() + " you must provide '"
+            throw new IllegalArgumentException("To work with " + getClass().getName() + " you must provide '"
                     + CLIENT_HOSTNAME + "' parameter in execution context");
         }
         return setOfGrantedClient.contains(executionContext.getString(CLIENT_HOSTNAME));
